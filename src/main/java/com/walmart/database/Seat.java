@@ -7,6 +7,13 @@ public class Seat {
 	private int row;
 	private int seatNum;
 	
+	/**
+	 * 
+	 * @param seatNum
+	 * @param level
+	 * @param row
+	 * @param availability
+	 */
 	public Seat(int seatNum, int level, int row, int availability){
 		this.seatNum = seatNum;
 		this.level = level;

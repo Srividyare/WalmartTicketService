@@ -11,11 +11,9 @@ import com.walmart.database.*;
 
 public class WalmartTicketService implements TicketService {
 
-	SeatDB obj= SeatDB.getInstance();
+	SeatDB seatDbobject= SeatDB.getInstance();
 	private static WalmartTicketService instance = null;
-	/**
-	 * 
-	 */
+	
 	
 	public static WalmartTicketService getInstance(){
 		if (instance == null) {
@@ -23,19 +21,20 @@ public class WalmartTicketService implements TicketService {
 		} 
 		return instance;
 	}
-	
+	@Override
 	public int numSeatsAvailable(Optional<Integer> venueLevel) {
+		
 		synchronized(this) {
 
-			Seat obj2 = null;
+			Seat seatObject = null;
 			int count=0;
 			if(venueLevel.isPresent()) {
-				Map<Integer, ArrayList<Seat>> rowMap = obj.getSeatMap().get(venueLevel.get());
+				Map<Integer, ArrayList<Seat>> rowMap = seatDbobject.getSeatMap().get(venueLevel.get());
 				for( Entry<Integer, ArrayList<Seat>> e :  rowMap.entrySet()){
 
 					for(int i=0; i< e.getValue().size(); i++){
-						obj2 = e.getValue().get(i);
-						if(obj2.getAvailability() == 0) count++ ;
+						seatObject = e.getValue().get(i);
+						if(seatObject.getAvailability() == 0) count++ ;
 					}
 
 
@@ -43,12 +42,12 @@ public class WalmartTicketService implements TicketService {
 				return count;
 
 			} else {
-				Map<Integer, HashMap<Integer, ArrayList<Seat>>> levelMap = obj.getSeatMap();
+				Map<Integer, HashMap<Integer, ArrayList<Seat>>> levelMap = seatDbobject.getSeatMap();
 				for(Entry<Integer, HashMap<Integer, ArrayList<Seat>>> e : levelMap.entrySet()){
 					for(Entry<Integer, ArrayList<Seat>> e1 : e.getValue().entrySet()){
 						for(int i=0; i< e1.getValue().size(); i++){
-							obj2 = e1.getValue().get(i);
-							if(obj2.getAvailability() == 0) count++ ;
+							seatObject = e1.getValue().get(i);
+							if(seatObject.getAvailability() == 0) count++ ;
 						}
 					}
 
@@ -69,10 +68,10 @@ public class WalmartTicketService implements TicketService {
 		if (maxLevel.isPresent()) {
 			maximumLevel = maxLevel.get();
 		}
-		Seat obj2 = null;
+		Seat seatObject = null;
 		ArrayList<Seat> holdList = new ArrayList<Seat>();
 		synchronized(this) {
-			Map<Integer, HashMap<Integer, ArrayList<Seat>>> levelMap = obj.getSeatMap();
+			Map<Integer, HashMap<Integer, ArrayList<Seat>>> levelMap = seatDbobject.getSeatMap();
 		
 			if(numSeats != 0){
 				for(int i= minimumLevel; i<= maximumLevel ; i++){
@@ -80,14 +79,14 @@ public class WalmartTicketService implements TicketService {
 					for( Entry<Integer, ArrayList<Seat>> e :  rowMap.entrySet()){
 
 						for(int j=0; j< e.getValue().size(); j++){
-							obj2 = e.getValue().get(j);
-							if(obj2.getAvailability() == 0) {
-								obj2.setAvailability(1);
-								holdList.add(obj2);
+							seatObject = e.getValue().get(j);
+							if(seatObject.getAvailability() == 0) {
+								seatObject.setAvailability(1);
+								holdList.add(seatObject);
 								numSeats--;
 								if(numSeats == 0){
 									SeatHold seatHold  = new SeatHold(customerEmail.hashCode(),customerEmail, holdList, System.currentTimeMillis());
-									obj.getSeatHoldMap().put(customerEmail, seatHold);
+									seatDbobject.getSeatHoldMap().put(customerEmail, seatHold);
 									
 									return seatHold;
 								}
@@ -110,18 +109,18 @@ public class WalmartTicketService implements TicketService {
 
 	@Override
 	public String reserveSeats(int seatHoldId, String customerEmail) {
-		Seat obj2=null;
-		if (obj.getSeatHoldMap().get(customerEmail) == null) {
+		Seat seatObject=null;
+		if (seatDbobject.getSeatHoldMap().get(customerEmail) == null) {
 			return null;
 		}
-		List<Seat> reserveList = obj.getSeatHoldMap().get(customerEmail).getHeldSeat();
+		List<Seat> reserveList = seatDbobject.getSeatHoldMap().get(customerEmail).getHeldSeat();
 		
 		for(int i= 0; i<reserveList.size();i++){
-			obj2= reserveList.get(i);
-			obj2.setAvailability(2);
+			seatObject= reserveList.get(i);
+			seatObject.setAvailability(2);
 					
 		}
-		obj.getSeatHoldMap().remove(customerEmail);
+		seatDbobject.getSeatHoldMap().remove(customerEmail);
 		
 		return String.valueOf(seatHoldId);
 	}
