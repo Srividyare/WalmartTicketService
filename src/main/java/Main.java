@@ -1,3 +1,4 @@
+import java.net.InetAddress;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -6,7 +7,7 @@ import com.walmart.service.WalmartTicketService;
 
 public class Main {
 
-	static WalmartTicketService obj= WalmartTicketService.getInstance();
+	static WalmartTicketService walmartTSObject= WalmartTicketService.getInstance();
 
 	public static void main(String args[]){
 		Scanner scan = new Scanner(System.in);
@@ -34,8 +35,7 @@ public class Main {
 				} else  {
 					level=Optional.of(Integer.parseInt(s));
 				}
-
-				System.out.println("Number of seat available:" +obj.numSeatsAvailable(level));
+				System.out.println("Number of seat available:" +walmartTSObject.numSeatsAvailable(level));
 			}
 
 			else if(select == 2){
@@ -45,7 +45,7 @@ public class Main {
 				String s = null;
 				if (scan.hasNextLine()) {
 					s = scan.nextLine();
-					s = scan.nextLine();
+					//s = scan.nextLine();
 				}
 				//System.out.println(s);
 				Optional<Integer> min = null;
@@ -71,12 +71,17 @@ public class Main {
 				System.out.println("Enter the email address");
 				String mail = scan.next();
 				long currentTime = System.currentTimeMillis();
-				SeatHold obj2 = obj.findAndHoldSeats(num, min, max,mail);
-				if(obj2 == null){
-					System.out.println("Sorry, we only have " + obj.numSeatsAvailable(Optional.ofNullable(null)) + " seats available" );
+				SeatHold seatHoldObject = null;
+				try {
+					seatHoldObject = walmartTSObject.findAndHoldSeats(num, min, max,mail);
+				} catch (Exception e) {
+					System.err.println("Exception in holding seats :" + e.getMessage());
+				}
+				if(seatHoldObject == null){
+					System.out.println("Sorry, we only have " + walmartTSObject.numSeatsAvailable(Optional.ofNullable(null)) + " seats available" );
 				}
 				else{
-					System.out.println(obj2.getSeatHoldId());
+					System.out.println(seatHoldObject.getSeatHoldId());
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("operation done in " + (endTime - currentTime) + " milliseconds" );
@@ -87,7 +92,14 @@ public class Main {
 				int id=scan.nextInt();
 				System.out.println("Enter the email:");
 				String mail = scan.next();
-				String s  = obj.reserveSeats(id, mail);
+				//InetAddress mail = new InetAddress(mail);
+				//mail.validate();
+				String s = null;
+				try {
+					s = walmartTSObject.reserveSeats(id, mail);
+				} catch (Exception e) {
+					System.err.println("Sorry, cannot reserve seats: " + e.getMessage());
+				}
 				if (s == null) {
 					System.out.println("Oops! Looks like you havn't held any seats. Please select option 2 to select hold seats and then reserve");
 				} else {

@@ -36,12 +36,13 @@ public interface TicketService {
 	* @return a SeatHold object identifying the specific seats and related
 
 	information
+	 * @throws Exception 
 
 	*/
 
 	SeatHold findAndHoldSeats(int numSeats, Optional<Integer> minLevel,
 
-	Optional<Integer> maxLevel, String customerEmail);
+	Optional<Integer> maxLevel, String customerEmail) throws Exception;
 
 	/**
 
@@ -56,9 +57,10 @@ public interface TicketService {
 	is assigned
 
 	* @return a reservation confirmation code
+	 * @throws Exception 
 
 	*/
 
-	String reserveSeats(int seatHoldId, String customerEmail);
+	String reserveSeats(int seatHoldId, String customerEmail) throws Exception;
 
 }

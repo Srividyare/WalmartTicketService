@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.walmart.database.SeatHold;
@@ -22,15 +23,27 @@ public class WalmartServiceLoadTest implements Runnable {
 	private int numSeatsToHold = 10;
 	static Set<String> reservationCode = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
+	@After
+	public void runAfterTest() {
+		walmartTS.makeAllSeatsAvailable();
+	}
+	
 	@Override
 	public void run() {
 		long startTime = System.currentTimeMillis();
-		SeatHold held = walmartTS.findAndHoldSeats(numSeatsToHold, Optional.of(1), Optional.of(4), "abc"+Thread.currentThread().getId()+"@abc.com");
-		System.out.println("Time to hold seats for thread " + Thread.currentThread().getId() + " is " + (System.currentTimeMillis() - startTime) + " ms");
+		SeatHold held;
+		try {
+			held = walmartTS.findAndHoldSeats(numSeatsToHold, Optional.of(1), Optional.of(4), "abc"+Thread.currentThread().getId()+"@abc.com");
+		
+	//	System.out.println("Time to hold seats for thread " + Thread.currentThread().getId() + " is " + (System.currentTimeMillis() - startTime) + " ms");
 		startTime = System.currentTimeMillis();
 		String code = walmartTS.reserveSeats(held.getSeatHoldId(), "abc"+Thread.currentThread().getId()+"@abc.com");
-		System.out.println("Time to reserve seats for thread " + Thread.currentThread().getId() + " is " + (System.currentTimeMillis() - startTime) + " ms");
+	//	System.out.println("Time to reserve seats for thread " + Thread.currentThread().getId() + " is " + (System.currentTimeMillis() - startTime) + " ms");
 		reservationCode.add(code);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test
