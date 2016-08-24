@@ -7,9 +7,10 @@ public class Config {
 	public  int[] rowArray = new int[5];
 	public  int[] seatRowArray = new int[5];
 	public static int heldSeatsExpiryTime = 10000; // in ms
-	
-	
 
+	/**
+	 * Constructor sets the values as given below
+	 */
 	public Config(){ // constructor
 
 		levelNameArray[1] = "Orchestra";

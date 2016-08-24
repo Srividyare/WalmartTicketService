@@ -17,7 +17,10 @@ public class WalmartTicketService implements TicketService {
 	SeatDB seatDbobject= SeatDB.getInstance();
 	private static WalmartTicketService instance = null;
 
-
+	/**
+	 * Generates the object of WalmastTicketService class
+	 * @return instance
+	 */
 	public static WalmartTicketService getInstance(){
 		if (instance == null) {
 			instance = new WalmartTicketService();
@@ -27,30 +30,27 @@ public class WalmartTicketService implements TicketService {
 	@Override
 	public synchronized int numSeatsAvailable(Optional<Integer> venueLevel) {
 
-
-
 		Seat seatObject = null;
 		int count=0;
 		//	synchronized(this){
 		expireOldHeldSeats();
+		//if the venueLevel is a valid value (1<= venueLevel <=4) 
 		if(venueLevel.isPresent()) {
-			//edge condition if the customer enters a level which is more than existing then it returns all available seats
-			/*if(Optional.ofNullable(venueLevel)> 4){
-					venueLevel = Optional.of(0);
-				}*/
+
 			Map<Integer, ArrayList<Seat>> rowMap = seatDbobject.getSeatMap().get(venueLevel.get());
+
+			//Iterate over the map to count the available seats in the particular level by checking if the availability is 0
 			for( Entry<Integer, ArrayList<Seat>> e :  rowMap.entrySet()){
 
 				for(int i=0; i< e.getValue().size(); i++){
 					seatObject = e.getValue().get(i);
 					if(seatObject.getAvailability() == 0) count++ ;
 				}
-
-
 			}
 			return count;
-
-		} else {
+		} 
+		//if the venueLevel is not a valid value then return all the seats available
+		else {
 			Map<Integer, HashMap<Integer, ArrayList<Seat>>> levelMap = seatDbobject.getSeatMap();
 			for(Entry<Integer, HashMap<Integer, ArrayList<Seat>>> e : levelMap.entrySet()){
 				for(Entry<Integer, ArrayList<Seat>> e1 : e.getValue().entrySet()){
@@ -59,10 +59,6 @@ public class WalmartTicketService implements TicketService {
 						if(seatObject.getAvailability() == 0) count++ ;
 					}
 				}
-
-
-
-
 			}
 		}
 		//}
@@ -80,9 +76,11 @@ public class WalmartTicketService implements TicketService {
 		if (maxLevel.isPresent()) {
 			maximumLevel = maxLevel.get();
 		}
+		// Check the input of levels given by user
 		if(maximumLevel < minimumLevel) {
 			throw new Exception("Max Level should be greater than Min Level");
 		}
+		// Check if there are seats being held on the given email address
 		if(seatDbobject.getSeatHoldMap().containsKey(customerEmail)){
 			throw new Exception("Seats are being held with the given Email address");
 		}
@@ -111,16 +109,12 @@ public class WalmartTicketService implements TicketService {
 
 								return seatHold;
 							}
-
 						}
-
-
 					}
 				}
 			}
-
 		}
-		//	}
+
 		for (int i = 0; i < holdList.size(); i ++) {
 			holdList.get(i).setAvailability(0);
 		}
@@ -132,15 +126,15 @@ public class WalmartTicketService implements TicketService {
 	public String reserveSeats(int seatHoldId, String customerEmail) throws Exception {
 		expireOldHeldSeats();
 		Seat seatObject=null;
+		//Check if there are seats being held or expired
 		if (seatDbobject.getSeatHoldMap().get(customerEmail) == null) {
 			throw new Exception("Sorry no seats are being hold or held seats have expired for this id. Please hold seats again.");
 		}
 		List<Seat> reserveList = seatDbobject.getSeatHoldMap().get(customerEmail).getHeldSeat();
-
+		// Setting availability status to reserved
 		for(int i= 0; i<reserveList.size();i++){
 			seatObject= reserveList.get(i);
 			seatObject.setAvailability(2);
-
 		}
 		seatDbobject.getSeatHoldMap().remove(customerEmail);
 
@@ -168,6 +162,4 @@ public class WalmartTicketService implements TicketService {
 	public  void makeAllSeatsAvailable() {
 		seatDbobject.fillLevel();
 	}
-
-
 }
