@@ -1,4 +1,4 @@
-package com.walmart.database;
+package com.walmart.model;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class TestSeat {
 
-	Seat seatObj = new Seat(10,3,1,0);
+	Seat seatObj = new Seat(10,3,1,0, 100);
 
 	@Test
 	public void testAvailability() {
@@ -23,5 +23,8 @@ public class TestSeat {
 	}
 	public void testSeatNum() {
 		assertEquals(10, seatObj.getSeatNum());
+	}
+	public void testPrice() {
+		assertEquals(100, seatObj.getPrice());
 	}
 }

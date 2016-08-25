@@ -1,4 +1,4 @@
-package com.walmart.database;
+package com.walmart.model;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +15,7 @@ public class TestSeatHold {
 	@BeforeClass
 	public static void before() {
 		for (int i = 0; i< 3; i++) {
-			Seat seat = new Seat (i, 1,1,0);
+			Seat seat = new Seat (i, 1,1,0, 100);
 			seatList.add(seat);
 		}
 		seatHoldObject = new SeatHold(0, "walmart@walmart.com", seatList, (long) 1200000000);

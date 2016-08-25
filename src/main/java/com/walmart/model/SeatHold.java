@@ -1,4 +1,4 @@
-package com.walmart.database;
+package com.walmart.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ public class SeatHold {
 	private String customerEmail;
 	private List<Seat> heldSeat = new ArrayList<Seat>();
 	private long time;
+	private int totalPrice = 0;
+	private Exception exception;
 	/**
 	 * Constructor that initializes the class variables to the values passed
 	 * @param seatHoldId unique identifier generated for a set of seats held by a customer
@@ -22,6 +24,14 @@ public class SeatHold {
 		this.customerEmail = customerEmail;
 		this.heldSeat = heldSeat;
 		this.time = time;
+		
+		for (int i = 0; i < heldSeat.size(); i++) {
+			totalPrice = totalPrice + heldSeat.get(i).getPrice();
+		}
+	}
+	
+	public SeatHold(Exception exception) {
+		this.exception = exception;
 	}
 	/**
 	 * Returns the SeatHoldId of the seats held

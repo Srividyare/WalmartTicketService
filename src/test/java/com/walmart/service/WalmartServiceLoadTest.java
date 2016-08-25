@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.junit.After;
 import org.junit.Test;
 
-import com.walmart.database.SeatHold;
+import com.walmart.model.SeatHold;
 
 public class WalmartServiceLoadTest implements Runnable {
 
@@ -22,7 +22,7 @@ public class WalmartServiceLoadTest implements Runnable {
 	private int timeoutInMs = 1000;
 	private int numSeatsToHold = 10;
 	static Set<String> reservationCode = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-
+	Integer none = null;
 	@After
 	public void runAfterTest() {
 		walmartTS.makeAllSeatsAvailable();
@@ -63,6 +63,7 @@ public class WalmartServiceLoadTest implements Runnable {
 			String s = (String) iter.next();
 			assertNotNull(s);
 		}
-		assertEquals(6250 - (numThreads * numSeatsToHold) , walmartTS.numSeatsAvailable(Optional.ofNullable(null)));
+		
+		assertEquals(6250 - (numThreads * numSeatsToHold) , walmartTS.numSeatsAvailable(Optional.ofNullable(none)));
 	}
 }

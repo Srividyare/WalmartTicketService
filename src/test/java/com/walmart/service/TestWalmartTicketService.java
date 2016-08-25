@@ -9,31 +9,31 @@ import java.util.Optional;
 import org.junit.After;
 import org.junit.Test;
 
-import com.walmart.database.Seat;
-import com.walmart.database.SeatHold;
-import com.walmart.database.Config;
-
-import sun.reflect.annotation.ExceptionProxy;
+import com.walmart.config.Config;
+import com.walmart.model.Seat;
+import com.walmart.model.SeatHold;
 
 public class TestWalmartTicketService {
 
 	WalmartTicketService walmartTS = WalmartTicketService.getInstance();
+	Integer none = null;
 	
 	@After
 	public void runAfterTest() {
 		walmartTS.makeAllSeatsAvailable();
+		Config.heldSeatsExpiryTime = 60000;
 	}
 	
 	@Test
 	public void testTotalNumSeatsAvaialable(){
 		assertEquals(1250,walmartTS.numSeatsAvailable(Optional.of(1)));	
-		assertEquals(6250,walmartTS.numSeatsAvailable(Optional.ofNullable(null)));	
+		assertEquals(6250,walmartTS.numSeatsAvailable(Optional.ofNullable(none)));	
 		//assertEquals(6250,walmartTS.numSeatsAvailable(Optional.of(8)));
 	}
 	
 	@Test
 	public void testTotalNumSeatsAvaialableWithNull(){
-		assertEquals(6250,walmartTS.numSeatsAvailable(Optional.ofNullable(null)));		
+		assertEquals(6250,walmartTS.numSeatsAvailable(Optional.ofNullable(none)));		
 	}
 	
 	@Test
@@ -41,7 +41,7 @@ public class TestWalmartTicketService {
 		int level = 1;
 		SeatHold actualSeatHold = walmartTS.findAndHoldSeats(10, Optional.of(level), Optional.of(level), "abc1@abc.com");
 		List<Seat> heldSeats = new ArrayList<Seat>();
-		Seat seat1 = new Seat(1, 1, 1, 0);
+		Seat seat1 = new Seat(1, 1, 1, 0, 100);
 		heldSeats.add(seat1);
 		SeatHold expectedSeatHold = new SeatHold("abc1@abc.com".hashCode(), "abc1@abc.com", heldSeats, System.currentTimeMillis());
 		// check for seat hold properties
@@ -77,7 +77,7 @@ public class TestWalmartTicketService {
 		for (int i = 0; i < held.getHeldSeat().size(); i++) {
 			assertEquals(2, held.getHeldSeat().get(i).getAvailability());
 		}
-		assertEquals(6245, walmartTS.numSeatsAvailable(Optional.ofNullable(null)));
+		assertEquals(6245, walmartTS.numSeatsAvailable(Optional.ofNullable(none)));
 	}
 	
 	@Test
@@ -85,6 +85,6 @@ public class TestWalmartTicketService {
 		SeatHold held = walmartTS.findAndHoldSeats(5, Optional.of(1), Optional.of(4), "newabc@abc.com");
 		Config.heldSeatsExpiryTime = 50;
 		Thread.sleep(2000);
-		assertEquals(6250, walmartTS.numSeatsAvailable(Optional.ofNullable(null)));
+		assertEquals(6250, walmartTS.numSeatsAvailable(Optional.ofNullable(none)));
 	}
 }

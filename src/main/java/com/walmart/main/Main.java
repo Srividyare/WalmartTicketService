@@ -1,8 +1,9 @@
+package com.walmart.main;
 import java.net.InetAddress;
 import java.util.Optional;
 import java.util.Scanner;
 
-import com.walmart.database.SeatHold;
+import com.walmart.model.SeatHold;
 import com.walmart.service.WalmartTicketService;
 
 public class Main {
@@ -78,7 +79,7 @@ public class Main {
 					System.err.println("Exception in holding seats :" + e.getMessage());
 				}
 				if(seatHoldObject == null){
-					System.out.println("Sorry, we only have " + walmartTSObject.numSeatsAvailable(Optional.ofNullable(null)) + " seats available" );
+					System.out.println("Sorry, we only have " + walmartTSObject.numSeatsAvailable(Optional.ofNullable(new Integer(null))) + " seats available" );
 				}
 				else{
 					System.out.println(seatHoldObject.getSeatHoldId());

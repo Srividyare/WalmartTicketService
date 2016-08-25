@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.walmart.config.Config;
+import com.walmart.model.Seat;
+import com.walmart.model.SeatHold;
+
 public class SeatDB {
 
 	private Map<Integer, HashMap<Integer, ArrayList<Seat>>> seatMap = 
@@ -28,7 +32,7 @@ public class SeatDB {
 		Config configObj = new Config();
 
 		for(int i=1;i<=4;i++){
-			fillSeats(i, configObj.rowArray[i], configObj.seatRowArray[i]);
+			fillSeats(i, configObj.rowArray[i], configObj.seatRowArray[i], configObj.priceArray[i]);
 		}
 	}
 	/**
@@ -36,15 +40,16 @@ public class SeatDB {
 	 * @param level level value that is passed
 	 * @param row number of rows to be filled in each level
 	 * @param numSeats number of seats to be filled in each level
+	 * @param price price of each seat in the level
 	 */
-	private void fillSeats(int level, int row, int numSeats) {
+	private void fillSeats(int level, int row, int numSeats, int price) {
 
 		HashMap<Integer, ArrayList<Seat>> rowMap = new HashMap<Integer, ArrayList<Seat>>();
 
 		for(int i = 1; i <= row; i++){
 			ArrayList<Seat> seatList = new ArrayList<Seat>();
 			for(int j = 1; j <= numSeats; j++){
-				seatList.add(new Seat(j,level, i, 0));
+				seatList.add(new Seat(j,level, i, 0, price));
 			}
 			rowMap.put(i, seatList);
 		}

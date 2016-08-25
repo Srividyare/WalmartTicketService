@@ -1,4 +1,4 @@
-package com.walmart.database;
+package com.walmart.config;
 
 public class Config {
 

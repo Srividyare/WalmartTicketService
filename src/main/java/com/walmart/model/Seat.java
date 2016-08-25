@@ -1,4 +1,4 @@
-package com.walmart.database;
+package com.walmart.model;
 
 public class Seat {
 
@@ -6,6 +6,7 @@ public class Seat {
 	private int level;
 	private int row;
 	private int seatNum;
+	private int price;
 
 	/**
 	 * Constructor that initializes the class variables to the values passed
@@ -14,11 +15,12 @@ public class Seat {
 	 * @param row the row a particular seat is in 
 	 * @param availability determines the availability status of a seat, 0 for available, 1 for held, 2 for reserved
 	 */
-	public Seat(int seatNum, int level, int row, int availability){
+	public Seat(int seatNum, int level, int row, int availability, int price){
 		this.seatNum = seatNum;
 		this.level = level;
 		this.row = row;
 		this.availability = availability;
+		this.price = price;
 	}
 	/**
 	 * Returns the availability status of a seat
@@ -54,5 +56,13 @@ public class Seat {
 	 */
 	public int getSeatNum() {
 		return seatNum;
+	}
+	
+	/**
+	 * Returns the price of the seat
+	 * @return price
+	 */
+	public int getPrice() {
+		return price;
 	}
 }

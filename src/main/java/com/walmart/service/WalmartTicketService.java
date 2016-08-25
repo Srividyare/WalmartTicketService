@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import com.walmart.database.*;
+import com.walmart.config.Config;
+import com.walmart.database.SeatDB;
+import com.walmart.model.Seat;
+import com.walmart.model.SeatHold;
 
 public class WalmartTicketService implements TicketService {
 

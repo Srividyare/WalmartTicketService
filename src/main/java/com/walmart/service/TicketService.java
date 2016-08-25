@@ -2,7 +2,8 @@ package com.walmart.service;
 
 import java.util.Optional;
 
-import com.walmart.database.SeatHold;
+import com.walmart.model.SeatHold;
+
 
 public interface TicketService {
 	/**
