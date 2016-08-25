@@ -30,12 +30,13 @@ public class WalmartTicketService implements TicketService {
 		} 
 		return instance;
 	}
+	//Synchronized to make it thread safe so that no two users can hold or reserve a single seat
 	@Override
 	public synchronized int numSeatsAvailable(Optional<Integer> venueLevel) {
 
 		Seat seatObject = null;
 		int count=0;
-		//	synchronized(this){
+
 		expireOldHeldSeats();
 		//if the venueLevel is a valid value (1<= venueLevel <=4) 
 		if(venueLevel.isPresent()) {
@@ -67,7 +68,7 @@ public class WalmartTicketService implements TicketService {
 		//}
 		return count;
 	}
-
+	//Synchronized to make it thread safe so that no two users can hold or reserve a single seat
 	@Override
 	public synchronized SeatHold findAndHoldSeats(int numSeats, Optional<Integer> minLevel, Optional<Integer> maxLevel,
 			String customerEmail) throws Exception {
@@ -91,7 +92,7 @@ public class WalmartTicketService implements TicketService {
 		Seat seatObject = null;
 		ArrayList<Seat> holdList = new ArrayList<Seat>();
 
-		//	synchronized(this) {
+
 		expireOldHeldSeats();
 		Map<Integer, HashMap<Integer, ArrayList<Seat>>> levelMap = seatDbobject.getSeatMap();
 
@@ -143,12 +144,15 @@ public class WalmartTicketService implements TicketService {
 
 		return String.valueOf((seatHoldId + customerEmail).hashCode());
 	}
-
+	/**
+	 * Method releases seats which have expired
+	 */
 	public void expireOldHeldSeats() {
 		Collection c = Collections.synchronizedCollection(seatDbobject.getSeatHoldMap().entrySet());
 		Iterator<Entry<String, SeatHold>> iter = c.iterator();
 		while (iter.hasNext()) {
 			Entry<String, SeatHold> entry = iter.next();
+			//Check if the difference between current time and the holding request time exceeds the expire time
 			if((System.currentTimeMillis() - entry.getValue().getTime()) > Config.heldSeatsExpiryTime){
 
 				List<Seat> seats = entry.getValue().getHeldSeat();
@@ -161,7 +165,9 @@ public class WalmartTicketService implements TicketService {
 			}
 		}
 	}
-
+	/**
+	 * Method clears all seats and set availability status to 0
+	 */
 	public  void makeAllSeatsAvailable() {
 		seatDbobject.fillLevel();
 	}
