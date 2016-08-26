@@ -9,8 +9,8 @@ import com.walmart.service.WalmartTicketService;
 public class Main {
 
 	static WalmartTicketService walmartTSObject= WalmartTicketService.getInstance();
-
 	public static void main(String args[]){
+		Integer none = null;
 		Scanner scan = new Scanner(System.in);
 		//String s = scan.next();
 		//int i = scan.nextInt();
@@ -32,7 +32,7 @@ public class Main {
 				//System.out.println(s);
 				Optional<Integer> level = null;
 				if (s.equals("")) {
-					level=Optional.ofNullable(null);
+					level=Optional.ofNullable(none);
 				} else  {
 					level=Optional.of(Integer.parseInt(s));
 				}
@@ -40,6 +40,7 @@ public class Main {
 			}
 
 			else if(select == 2){
+				boolean exception = false;
 				System.out.println("Enter no .of seat required:");
 				int num=scan.nextInt();
 				System.out.println("Enter the range of levels desired: or just hit enter twice if not desired");
@@ -51,7 +52,7 @@ public class Main {
 				//System.out.println(s);
 				Optional<Integer> min = null;
 				if (s.equals("")) {
-					min=Optional.ofNullable(null);
+					min=Optional.ofNullable(none);
 				} else  {
 					min=Optional.of(Integer.parseInt(s));
 				}
@@ -63,7 +64,7 @@ public class Main {
 				//System.out.println(s);
 				Optional<Integer> max = null;
 				if (s.equals("")) {
-					max=Optional.ofNullable(null);
+					max=Optional.ofNullable(none);
 				} else  {
 					max=Optional.of(Integer.parseInt(s));
 				}
@@ -77,12 +78,14 @@ public class Main {
 					seatHoldObject = walmartTSObject.findAndHoldSeats(num, min, max,mail);
 				} catch (Exception e) {
 					System.err.println("Exception in holding seats :" + e.getMessage());
+					exception = true;
 				}
-				if(seatHoldObject == null){
-					System.out.println("Sorry, we only have " + walmartTSObject.numSeatsAvailable(Optional.ofNullable(new Integer(null))) + " seats available" );
+				if(seatHoldObject == null && !exception){
+					System.out.println("Sorry, we only have " + walmartTSObject.numSeatsAvailable(Optional.ofNullable(none)) + " seats available" );
 				}
 				else{
-					System.out.println(seatHoldObject.getSeatHoldId());
+					if (!exception)
+					System.out.println("Succesfully held seats with code/ seatHeadId " + seatHoldObject.getSeatHoldId());
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("operation done in " + (endTime - currentTime) + " milliseconds" );
@@ -104,7 +107,7 @@ public class Main {
 				if (s == null) {
 					System.out.println("Oops! Looks like you havn't held any seats. Please select option 2 to select hold seats and then reserve");
 				} else {
-					System.out.println("Confirmation code:" + s);
+					System.out.println("Succesfully reserved seats with confirmation code:" + s);
 				}	
 			}
 

@@ -84,9 +84,9 @@ public class WalmartTicketService implements TicketService {
 		if(maximumLevel < minimumLevel) {
 			throw new Exception("Max Level should be greater than Min Level");
 		}
-		// Check if there are seats being held on the given email address
+		// Check if there are seats being held on the given email address. Fail fast scenarios. 
 		if(seatDbobject.getSeatHoldMap().containsKey(customerEmail)){
-			throw new Exception("Seats are being held with the given Email address");
+			throw new Exception("Seats are already being held with the given Email address");
 		}
 
 		Seat seatObject = null;
@@ -127,7 +127,10 @@ public class WalmartTicketService implements TicketService {
 	}
 
 	@Override
-	public String reserveSeats(int seatHoldId, String customerEmail) throws Exception {
+	public String reserveSeats(int seatHoldId, String customerEmail) throws Exception { 
+	// here customerEmail is the one that we use as key. seatHoldId maybe used in future when the design
+  // is changed to have multiple seatHold requests per email.
+		  
 		expireOldHeldSeats();
 		Seat seatObject=null;
 		//Check if there are seats being held or expired
@@ -145,7 +148,16 @@ public class WalmartTicketService implements TicketService {
 		return String.valueOf((seatHoldId + customerEmail).hashCode());
 	}
 	/**
-	 * Method releases seats which have expired
+	 * Method releases seats which have expired. 
+	 * This is called before all operations, i.e finding available seats,
+	 * holding seats and reserving seats.
+	 * 
+	 * Other approaches:
+	 * One idea for expiry is to use a guava cache with time expiry, although
+	 * this approach in this scenario is much cheaper than guava.
+	 * Other idea is to use a expiry thread that keeps running in the background
+	 * to expire old seats. This may cause some delay in the expiry as we don't want
+	 * to run the thread continuously and burn the cpu.
 	 */
 	public void expireOldHeldSeats() {
 		Collection c = Collections.synchronizedCollection(seatDbobject.getSeatHoldMap().entrySet());
@@ -166,6 +178,7 @@ public class WalmartTicketService implements TicketService {
 		}
 	}
 	/**
+	 * Helper method for testing
 	 * Method clears all seats and set availability status to 0
 	 */
 	public  void makeAllSeatsAvailable() {

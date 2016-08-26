@@ -82,7 +82,7 @@ public class MainService {
       reservationConfirm = walmartTS.reserveSeats(seatHoldId, email);
     } catch (Exception e) {
 
-      return Response.status(200).entity("Your confirmation code is diediedie" ).build();
+      return Response.status(200).entity("Error reserving your seats. Please re-hold your seats." ).build();
     }
 
     return Response.status(200).entity("Your confirmation code is " + reservationConfirm).build();
