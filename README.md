@@ -22,7 +22,7 @@ The application can be run in two ways as discussed below,
 
   - Clone the project
 
-     `git@github.com:Srividyare/WalmartTicketService.git`
+     `git clone git@github.com:Srividyare/WalmartTicketService.git`
 
   - Go to the directory
 
