@@ -32,13 +32,13 @@ The application can be run in two ways as discussed below,
 
       `mvn clean compile install`
 
-  - Check if the jar file is created in target/TicketService-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+  - Check if the jar file is created in `target/TicketService-0.0.1-SNAPSHOT-jar-with-dependencies.jar`
 
   - To run the app
 
-     `java -jar TicketService-0.0.1-SNAPSHOT-jar-with-dependencies.jar`
+     `java -jar target/TicketService-0.0.1-SNAPSHOT-jar-with-dependencies.jar`
 
-  - Follow the instructions on the command line. 
+  - Follow the instructions on the command line. (The app will exit with an exception if a wrong input is provided). 
 
   Example Run:
 
@@ -94,7 +94,7 @@ The application can be run in two ways as discussed below,
 
 ###### Assumptions:
 
-1. User may hold multiple seats, but in a single request. If a user tries to hold seats again, he will be prompted to reserve the seats he currently holds, or wait until they expire. This is made to restrict any user from holding all seats in multiple request (if a maximum number of seats than can be held by a particular user comes in future). 
+1. User may hold multiple seats, but in a single request. If a user tries to hold seats again, he will be prompted to reserve the seats he currently holds, or wait until they expire. This is made to restrict any user from holding all seats in multiple request (so that we can support the maximun seats held by a single user usecase in future iterations if needed). 
 2. No disk based data-structure, or database is used so all seats hold requests and reservations are valid only in the current run of the application.
 
 
