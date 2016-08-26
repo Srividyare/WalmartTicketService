@@ -106,10 +106,10 @@ SeatDB is the class which maintains the in-memory database about seats in the ve
 ###### Coding and Development
 While developing the project, I tried to handle many edge cases like bad inputs from user etc. 
 SeatDB -  The map that holds the seat information is a regular
-hashmap that is not synchronized or concurrent, and hence the methods the use and modify it are synchronized to provide correctness. Whereas, the map to hold the SeatHold requests is
+hashmap that is not synchronized or concurrent, and hence the methods that use and modify it are synchronized to provide correctness. Whereas, the map to hold the SeatHold requests is
 a ConcurrentHashMap because we want to expire the requests without any locks and a `get` operation on a ConcurrentHashMap is volatile and hence we never get stale data. 
 
 ###### Testing
-To test the sanity of the app, I created a lots of test cases that captures multiple edge cases. One of them is WalmartServiceLoadTest, which runs multiple threads (50 in this case) and requests to hold seats and reserve them. This validates the correctness of the underlying logic with heavy load and that makes sure that no two threads/users get the same seats.
+To test the sanity of the app, I created lots of test cases that captures multiple edge cases. One of them is WalmartServiceLoadTest, which runs multiple threads (50 in this case) and requests to hold seats and reserve them. This validates the correctness of the underlying logic with heavy load and that makes sure that no two threads/users get the same seats.
 This is achieved because of synchronization implemented in the logic. I had to use synchronization because of the database chosen for the seats, an in-memory map.  
 
